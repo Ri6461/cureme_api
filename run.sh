@@ -2,7 +2,7 @@
 
 function main() {
 	source .venv/bin/activate
-	uvicorn app.app:api --host 0.0.0.0 --port 8888 --reload;
+	uvicorn app.app:api --host 0.0.0.0 --port 8888;
 	deactivate
 	exit 0
 }
