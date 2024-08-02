@@ -1,0 +1,5 @@
+1. Make endpoints relevent.
+2. Make assert(s) within unittests relevent, after making endpoints relevent.
+3. Design a UI for the app, based on endpoints within the API.
+4. Write a UI based on design using flutter for all platforms ( PC, and mobile both. )
+5. Connect and, test app entirely manually.
