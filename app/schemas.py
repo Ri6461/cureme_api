@@ -5,7 +5,6 @@ from datetime import date, datetime
 # User schemas
 class UserBase(BaseModel):
     email: EmailStr
-    username: str
     first_name: str
     last_name: str
     dob: date
