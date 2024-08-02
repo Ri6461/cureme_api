@@ -3,3 +3,7 @@
 3. Design a UI for the app, based on endpoints within the API.
 4. Write a UI based on design using flutter for all platforms ( PC, and mobile both. )
 5. Connect and, test app entirely manually.
+--
+
+Make local oauth's login same as /users/login endpoint (jwt)
+Implement google's oauth(prelogged-in) with local oauth
