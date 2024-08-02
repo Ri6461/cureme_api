@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import psycopg2
+import psycopg2, hashlib
 from psycopg2 import sql
 from dotenv import load_dotenv
 from os import environ as env
@@ -10,7 +10,7 @@ from os import path
 
 load_dotenv()
 host, user, passwd, db_name = env.get("DB_HOST"), env.get("DB_USER"), env.get("DB_PASS"), env.get("DB_NAME") 
-db_service_name = "postgresql"
+db_service_name, secret = "postgresql", env.get("SECRET")
 SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{passwd}@{host}/{db_name}"
 if env.get("USE_SQLITE").lower() == "yes":
     SQLALCHEMY_DATABASE_URL = f"sqlite:///{pwd()}/{db_name}.db"
@@ -36,7 +36,7 @@ def init_db():
         if not exists:
             # Create the database
             cursor.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name)))
-            print(f"Database {db_name} created!")
+            print(f"\n[+]Database {db_name} created!", end='\n'*2)
 
         cursor.close()
         conn.close()
@@ -55,6 +55,32 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def skip_cipher(string_a, string_b):
+    # Determine the length of the longer string
+    max_len = max(len(string_a), len(string_b))
+    
+    # Initialize the result as an empty list
+    result = []
+    
+    # Loop through the maximum length
+    for i in range(max_len):
+        if i < len(string_a):
+            result.append(string_a[i])
+        if i < len(string_b):
+            result.append(string_b[i])
+    
+    # Join the list into a string and return it
+    return ''.join(result)
+
+
+def digest(string):
+    h1 = hashlib.sha512(string.encode()).hexdigest()
+    h2 = hashlib.sha512(h1.encode()).hexdigest()
+    h1, h2 = h2[:64], h2[64:]
+    h1 = skip_cipher(h1, h2)
+    h2 = hashlib.sha512(h1.encode()).hexdigest()
+    return skip_cipher(h1, h2)
 
 
 # Call the init_db function

@@ -10,15 +10,23 @@ class UserBase(BaseModel):
     last_name: str
     dob: date
     phone_number: str
+    avatar: Optional[str]
     address: str
 
+class UserLogin(BaseModel):
+    email: EmailStr
+    secret: str
+
+class UserAuth(BaseModel):
+    token: str
+
 class UserCreate(UserBase):
-    hashed_password: str
+    secret: str
     created_at: datetime
     updated_at: datetime
 
 class UserUpdate(UserBase):
-    hashed_password: Optional[str] = None
+    secret: Optional[str] = None
     updated_at: Optional[datetime] = None
     
 

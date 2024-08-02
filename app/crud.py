@@ -14,11 +14,12 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 def create_user(db: Session, user: schemas.UserCreate):
     db_user = models.User(
         email=user.email,
-        hashed_password=user.hashed_password,
+        secret=user.secret,
         username=user.username,
         first_name=user.first_name,
         last_name=user.last_name,
         dob=user.dob,
+        avatar=user.avatar,
         phone_number=user.phone_number,
         address=user.address,
         created_at=user.created_at,

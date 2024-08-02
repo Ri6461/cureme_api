@@ -2,4 +2,12 @@ fastapi[all]
 sqlalchemy
 psycopg2-binary
 pytest
+python-jose[cryptography]
+httpx
+python-multipart
+beautifulsoup4
+lxml
+requests
+faker
+requests-html
 psycopg2

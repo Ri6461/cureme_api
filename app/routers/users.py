@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .. import crud, schemas
-from ..database import get_db
+from ..database import get_db, digest, secret
+from jose import jwt
 
 
 router = APIRouter()
@@ -19,19 +20,39 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return users
 
 @router.put("/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), hashed: bool = False):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+    if not hashed:
+        user.secret = digest(user.secret)
     return crud.create_user(db=db, user=user)
 
 
-@router.post("/", response_model=schemas.User)
-def add_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+@router.post("/login")
+def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    payload = {
+        'id': db_user.id,
+        'username': db_user.username,
+        'email': db_user.email,
+        'avatar': db_user.avatar,
+        'name': db_user.first_name + ' ' + db_user.last_name,
+    }
+    if digest(user.secret) == db_user.secret:
+        token = jwt.encode(payload, secret, algorithm='HS256')
+        return {"jwt": token}
+    raise HTTPException(status_codes=401, detail="Invalid credentials supplied.")
+
+
+@router.post("/auth")
+def auth(creds: schemas.UserAuth):
+    data = jwt.decode(creds.token, secret, algorithms=['HS256'])
+    if data:
+        return data
+    raise HTTPException(status_codes=401, detail="Invalid credentials supplied.")
 
 
 @router.patch("/{user_id}", response_model=schemas.User)
