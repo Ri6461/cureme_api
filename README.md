@@ -20,5 +20,3 @@
 
 1. Make soure you're the project virtual environment.
 2. Either run `pytest` or `./test.sh` bash script.
-
-<!-- Even though commit author is rabin, code owner is @profxadke. -->
