@@ -3,15 +3,16 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .. import crud, schemas
 from ..database import get_db
+from .notifications import Depends, Annotated, USER, get_current_active_user
 
 router = APIRouter()
 
-@router.get("/{user_id}", response_model=List[schemas.Reminder])
-def read_reminder(user_id: int, db: Session = Depends(get_db)):
-    user = crud.get_user(db, user_id=user_id)
+@router.get("/user", response_model=List[schemas.Reminder])
+def read_reminder(current_user: Annotated[USER, Depends(get_current_active_user)], db: Session = Depends(get_db)):
+    user = crud.get_user(db, user_id=current_user.id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    db_reminders = crud.get_reminder(db, user_id=user_id)
+    db_reminders = crud.get_reminder(db, user_id=current_user.id)
     if db_reminders is None:
         raise HTTPException(status_code=404, detail="No Reminders found for this user")
     return db_reminders

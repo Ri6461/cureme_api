@@ -149,6 +149,14 @@ def delete_reminder(db: Session, reminder_id: int):
 def get_notification(db: Session, user_id: int):
     return db.query(models.Notification).filter(models.Notification.user_id == user_id).all()
 
+def get_notification_by_email(db: Session, email: str):
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        return False
+    n = db.query(models.Notification).filter(models.Notification.user_id == user.id).all()
+    print(n)
+    return n
+
 def _get_notification(db: Session, notification_id: int):
     return db.query(models.Notification).filter(models.Notification.id == notification_id).first()
 

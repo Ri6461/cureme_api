@@ -1,17 +1,70 @@
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List, Annotated
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from .. import crud, schemas
-from ..database import get_db
+from ..database import get_db, secret, SessionLocal
+from jose import jwt
+from jose.exceptions import JWTError
+# from ..app import USER, get_current_active_user
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+class USER(schemas.BaseModel):
+    id: int
+    sub: str
+    nam: str | None = None
+    pic: str | None = None
+    disabled: bool = False
+
+class TokenData(schemas.BaseModel):
+    username: str | None = None
+
+def get_user(username: str):
+    return crud.get_user_by_email(db=SessionLocal(), email=username)
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, secret, algorithms=['HS256'])
+        username: str = payload.get("sub")
+        ''' 
+        if payload.get("disabled"):
+            raise credentials_exception
+        '''
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credentials_exception
+    user = get_user(username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    payload['nam'] = payload['name']
+    payload.pop('name')
+    return USER(id=payload['id'], sub=payload['sub'], pic=payload['pic'], nam=payload['nam'], disabled=False)
+
+async def get_current_active_user(
+    current_user: Annotated[USER, Depends(get_current_user)],
+):
+    '''
+    if not current_user:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    '''
+    return current_user
 
 router = APIRouter()
 
-@router.get("/{user_id}", response_model=List[schemas.Notification])
-def read_notification(user_id: int, db: Session = Depends(get_db)):
+@router.get("/user", response_model=List[schemas.Notification])
+def read_notification(current_user: Annotated[USER, Depends(get_current_active_user)], db: Session = Depends(get_db)):
+    '''
     user = crud.get_user(db, user_id=user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    db_notification = crud.get_notification(db, user_id=user_id)
+    '''
+    db_notification = crud.get_notification_by_email(db, email=current_user.sub)
     if db_notification is None:
         raise HTTPException(status_code=404, detail="No Notifications found for this user.")
     return db_notification

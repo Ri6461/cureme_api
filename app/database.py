@@ -10,7 +10,7 @@ from os import path
 
 load_dotenv()
 host, user, passwd, db_name = env.get("DB_HOST"), env.get("DB_USER"), env.get("DB_PASS"), env.get("DB_NAME") 
-db_service_name, secret = "postgresql", env.get("SECRET")
+db_service_name, secret = "postgresql", env.get("GOOGLE_CLIENT_SECRET")
 SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{passwd}@{host}/{db_name}"
 if env.get("USE_SQLITE").lower() == "yes":
     SQLALCHEMY_DATABASE_URL = f"sqlite:///{pwd()}/{db_name}.db"
