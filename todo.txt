@@ -6,4 +6,3 @@
 --
 
 Make local oauth's login same as /users/login endpoint (jwt)
-Implement google's oauth(prelogged-in) with local oauth
