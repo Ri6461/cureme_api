@@ -6,3 +6,4 @@
 --
 
 Make local oauth's login same as /users/login endpoint (jwt)
+Add [ root, admin, user, client ] => RBAC in FastAPI
