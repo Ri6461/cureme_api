@@ -6,4 +6,5 @@
 --
 
 Make local oauth's login same as /users/login endpoint (jwt)
+Add /vaccine endpint
 Add [ root, admin, user, client ] => RBAC in FastAPI
