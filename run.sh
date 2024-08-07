@@ -1,6 +1,13 @@
 #!/bin/bash
 
 function main() {
+	if [[ ! -d ./.venv ]]; then
+		pip install -U pip uv
+		uv venv
+		source .venv/bin/activate
+		uv pip install -Ur requirements.txt
+		deactivate
+	fi
 	source .venv/bin/activate
 	uvicorn app.app:api --host 0.0.0.0 --port 8888;
 	deactivate
