@@ -361,10 +361,10 @@ def get_user_vaccine(db: Session, user_id: int):
     return db.query(models.Vaccine).filter(models.Vaccine.user_id == user_id).all()
 
 def get_vaccines(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Medication).offset(skip).limit(limit).all()
+    return db.query(models.Vaccine).offset(skip).limit(limit).all()
 
 def create_vaccine(db: Session, vaccine: schemas.VaccineCreate, user_id: int):
-    db_vaccine = models.Medication(**vaccine.dict(), user_id=user_id)
+    db_vaccine = models.Vaccine(**vaccine.dict(), user_id=user_id)
     db.add(db_vaccine)
     db.commit()
     db.refresh(db_vaccine)
