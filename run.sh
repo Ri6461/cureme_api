@@ -11,6 +11,7 @@ function main() {
 	source .venv/bin/activate
 	uvicorn app.app:api --host 0.0.0.0 --port 8888;
 	deactivate
+	rm -rf __pycache__ app/__pycache__ app/routers/__pycache__ app/models/__pycache__ app/crud/__pycache__ app/schemas/__pycache__
 	exit 0
 }
 
