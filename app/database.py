@@ -11,7 +11,7 @@ from os import path
 load_dotenv()
 host, user, passwd, db_name = env.get("DB_HOST"), env.get("DB_USER"), env.get("DB_PASS"), env.get("DB_NAME") 
 db_service_name, secret = "postgresql", env.get("GOOGLE_CLIENT_SECRET")
-SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{passwd}@{host}/{db_name}"
+SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{user}:{passwd}@{host}/{db_name}"
 if env.get("USE_SQLITE").lower() == "yes":
     SQLALCHEMY_DATABASE_URL = f"sqlite:///{pwd()}/{db_name}.db"
     db_service_name = "sqlite"
@@ -36,7 +36,7 @@ def init_db():
         if not exists:
             # Create the database
             cursor.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name)))
-            print(f"\n[+]Database {db_name} created!", end='\n'*2)
+            print(f"\n[+] Database {db_name} created!", end='\n'*2)
 
         cursor.close()
         conn.close()

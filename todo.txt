@@ -6,4 +6,5 @@
 --
 
 Make local oauth's login same as /users/login endpoint (jwt)
+Prompt user [ Password, Date of Birth, Address, Contact ] after OAUTH (reg.)
 Add [ root, admin, user, client ] => RBAC in FastAPI
