@@ -1,6 +1,7 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, Text, Time, TIMESTAMP, DateTime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, Text, Time, TIMESTAMP, DateTime, Enum
 from sqlalchemy.orm import relationship
 from .database import Base
+from .roles import UserRole  # Import the UserRole Enum
 
 class User(Base):
     __tablename__ = "users"
@@ -15,6 +16,7 @@ class User(Base):
     dob = Column(Date)
     phone_number = Column(String(20))
     address = Column(String(255))
+    role = Column(Enum(UserRole), default=UserRole.PATIENT)  # Add this line
     created_at = Column(TIMESTAMP)
     updated_at = Column(TIMESTAMP)
 

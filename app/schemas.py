@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Literal, Optional
 from datetime import date, datetime
+from .roles import UserRole  # Import the UserRole Enum
 
 # User schemas
 class UserBase(BaseModel):
@@ -11,6 +12,7 @@ class UserBase(BaseModel):
     phone_number: str
     avatar: Optional[str]
     address: str
+    role: UserRole  # Add this line
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -27,7 +29,6 @@ class UserCreate(UserBase):
 class UserUpdate(UserBase):
     secret: Optional[str] = None
     updated_at: Optional[datetime] = None
-    
 
 class User(UserBase):
     id: int
