@@ -6,4 +6,5 @@
 --
 
 Make local oauth's login same as /users/login endpoint (jwt)
-Implement google's oauth(prelogged-in) with local oauth
+Prompt user [ Password, Date of Birth, Address, Contact ] after OAUTH (reg.)
+Add [ root, admin, user, client ] => RBAC in FastAPI
