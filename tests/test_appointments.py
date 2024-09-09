@@ -9,23 +9,23 @@ async def async_client():
 
 @pytest.mark.asyncio
 async def test_create_appointment(async_client):
-    response = await async_client.put("/appointments/", json={"date": "2023-10-10", "time": "10:00"})
+    response = await async_client.put("/appointments/", json={"title": "Dentist Visit","notes": "Need to see dentist","date": "2023-10-10", "time": "10:00"})
     assert response.status_code == 201
     assert response.json()["date"] == "2023-10-10"
 
 @pytest.mark.asyncio
 async def test_read_appointment(async_client):
-    response = await async_client.get("/appointments/1")
+    response = await async_client.get("/appointments/5")
     assert response.status_code == 200
     assert response.json()["date"] == "2023-10-10"
 
 @pytest.mark.asyncio
 async def test_update_appointment(async_client):
-    response = await async_client.patch("/appointments/1", json={"date": "2023-11-11"})
+    response = await async_client.patch("/appointments/5", json={"date": "2023-11-11"})
     assert response.status_code == 200
     assert response.json()["date"] == "2023-11-11"
 
 @pytest.mark.asyncio
 async def test_delete_appointment(async_client):
-    response = await async_client.delete("/appointments/1")
+    response = await async_client.delete("/appointments/5")
     assert response.status_code == 204

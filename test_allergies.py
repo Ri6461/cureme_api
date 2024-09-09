@@ -9,6 +9,7 @@ async def async_client():
 
 @pytest.mark.asyncio
 async def test_create_allergy(async_client: AsyncClient):
+    for _ in dir(async_client): print(_)
     response = await async_client.put(
         "/allergies/",
         json={"name": "Peanuts", "reaction": "Vomiting", "severity": "Moderate", "notes": "Lots of nuts"},
